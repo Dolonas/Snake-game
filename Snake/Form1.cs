@@ -232,12 +232,12 @@ namespace Snake
                     dirY = 1;
                     break;
                 case "P":
-                    MakePause();
+                    MakePause(sender, e);
                     break;
             }
         }
 
-        private void MakePause()
+        private void MakePause(Object myObject, EventArgs eventArgs)
         {
             if (timer.Enabled == true)
                 timer.Stop();
