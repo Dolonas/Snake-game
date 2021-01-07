@@ -60,6 +60,7 @@ namespace Snake
             timer.Start();
             mPlayer.Play(true);
             this.KeyDown += new KeyEventHandler(OKP);
+            this.buttonPause.Click += new EventHandler(MakePause);
         }
 
         private void GenerateMap()
@@ -231,12 +232,17 @@ namespace Snake
                     dirY = 1;
                     break;
                 case "P":
-                    if (timer.Enabled == true)
-                        timer.Stop();
-                    else
-                        timer.Start();
+                    MakePause();
                     break;
             }
+        }
+
+        private void MakePause()
+        {
+            if (timer.Enabled == true)
+                timer.Stop();
+            else
+                timer.Start();
         }
 
     }
