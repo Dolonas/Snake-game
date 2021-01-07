@@ -15,10 +15,11 @@ namespace Snake
     {
         private int rI, rJ;
         private PictureBox fruit;
-        private PictureBox[] snake = new PictureBox[400];
+        private PictureBox[] snake = new PictureBox[120];
+        private GroupBox PanelMng;
         private Label labelScore;
         private MyButton buttonPause;
-        private int _width = 900;
+        private int _width = 990;
         private int _height = 800;
         private int _sizeOfSides = 40;
         private int dirX = 1;
@@ -34,19 +35,26 @@ namespace Snake
             InitializeComponent();
             this.Width = _width;
             this.Height = _height;
+            PanelMng = new GroupBox();
+            PanelMng.Text = "Управление";
+            PanelMng.ForeColor = Color.White;
+            PanelMng.Size = new Size(90, _height-45);
+            PanelMng.Location = new Point(_width - 120, 2);
+            this.Controls.Add(PanelMng);
             labelScore = new Label();
             labelScore.Font = new Font(labelScore.Font.FontFamily, 12, labelScore.Font.Style);
             labelScore.ForeColor = Color.White;
             labelScore.Text = "Очки: 0";
-            labelScore.Location = new Point(805, 10);
-            this.Controls.Add(labelScore);
+            labelScore.Size = new Size(80, 40);
+            labelScore.Location = new Point(5, 30);
+            PanelMng.Controls.Add(labelScore);
             buttonPause = new MyButton();
-            buttonPause.Location = new Point(810, 200);
+            buttonPause.Location = new Point(10, 200);
             buttonPause.AutoSize = false;
-            buttonPause.Size = new Size(60, 40);
+            buttonPause.Size = new Size(80, 40);
             buttonPause.ForeColor = Color.White;
             buttonPause.Text = "Пауза";
-            this.Controls.Add(buttonPause);
+            PanelMng.Controls.Add(buttonPause);
             snake[0] = new PictureBox();
             snake[0].Location = new Point(1, 1);
             snake[0].Size = new Size(_sizeOfSides-1, _sizeOfSides-1);
@@ -70,7 +78,7 @@ namespace Snake
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
                 pic.Location = new Point(0, _sizeOfSides * i);
-                pic.Size = new Size(_width - 100, 1);
+                pic.Size = new Size(_width - 150, 1);
                 this.Controls.Add(pic);
             }
 
