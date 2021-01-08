@@ -14,10 +14,11 @@ namespace Snake
     public partial class Form1 : Form
     {
         private int rI, rJ;
-        private PictureBox fruit;
-        private PictureBox[] snake = new PictureBox[120];
-        private GroupBox PanelMng;
-        private Label labelScore;
+        private PictureBox fruit;  // заготовка фрукта, который будет поедать Змей
+        private PictureBox[] snake = new PictureBox[120];    //массив элементов Змейки
+        private GroupBox PanelGameField;  // элемент в которое будет помещено игровое поле
+        private GroupBox PanelMng;  // элемент формы, на котором будут располагаться органы управления
+        private Label labelScore;   //  текстовый элемент с подсчётом очков
         private MyButton buttonPause;
         private int _width = 990;
         private int _height = 800;
@@ -35,10 +36,32 @@ namespace Snake
             InitializeComponent();
             this.Width = _width;
             this.Height = _height;
+            FormBuilding();
+            SnakeAdd();
+            GenerateMap();
+            FruitInit();
+            GenerateFruit();
+            
+            mPlayer.Play(true);
+            this.KeyDown += new KeyEventHandler(OKP);
+            this.buttonPause.Click += new EventHandler(MakePause);
+        }
+
+        private void FormBuilding()
+        {
+            PanelGameField = new GroupBox();
+            PanelGameField.Text = "Игра";
+            PanelGameField.ForeColor = Color.White;
+            PanelGameField.BackColor = Color.FromArgb(30, 50, 30);
+            PanelGameField.Size = new Size(_width - 150, _height - 45);
+            PanelGameField.Location = new Point(2, 2);
+            this.Controls.Add(PanelGameField);
+
             PanelMng = new GroupBox();
             PanelMng.Text = "Управление";
             PanelMng.ForeColor = Color.White;
-            PanelMng.Size = new Size(90, _height-45);
+            PanelMng.BackColor = Color.FromArgb(40,40,40);
+            PanelMng.Size = new Size(90, _height - 45);
             PanelMng.Location = new Point(_width - 120, 2);
             this.Controls.Add(PanelMng);
             labelScore = new Label();
@@ -55,20 +78,18 @@ namespace Snake
             buttonPause.ForeColor = Color.White;
             buttonPause.Text = "Пауза";
             PanelMng.Controls.Add(buttonPause);
-            snake[0] = new PictureBox();
-            snake[0].Location = new Point(1, 1);
-            snake[0].Size = new Size(_sizeOfSides-1, _sizeOfSides-1);
-            snake[0].BackColor = Color.Red;
-            this.Controls.Add(snake[0]);
-            GenerateMap();
-            FruitInit();
-            GenerateFruit();
             timer.Tick += new EventHandler(_update);
             timer.Interval = 300;
             timer.Start();
-            mPlayer.Play(true);
-            this.KeyDown += new KeyEventHandler(OKP);
-            this.buttonPause.Click += new EventHandler(MakePause);
+        }
+
+        private void SnakeAdd()
+        {
+            snake[0] = new PictureBox();
+            snake[0].Location = new Point(4, 6);
+            snake[0].Size = new Size(_sizeOfSides - 1, _sizeOfSides - 1);
+            snake[0].BackColor = Color.Red;
+            PanelGameField.Controls.Add(snake[0]);
         }
 
         private void GenerateMap()
@@ -77,18 +98,18 @@ namespace Snake
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
-                pic.Location = new Point(0, _sizeOfSides * i);
+                pic.Location = new Point(2, _sizeOfSides * i + 7);
                 pic.Size = new Size(_width - 150, 1);
-                this.Controls.Add(pic);
+                PanelGameField.Controls.Add(pic);
             }
 
             for (int j = 0; j < _width / _sizeOfSides-1; j++)
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
-                pic.Location = new Point(_sizeOfSides * j, 0);
+                pic.Location = new Point(_sizeOfSides * j + 2, 7);
                 pic.Size = new Size(1, _height - 80);
-                this.Controls.Add(pic);
+                PanelGameField.Controls.Add(pic);
             }
         }
 
@@ -138,7 +159,7 @@ namespace Snake
             rI++;
             rJ++;
             fruit.Location = new Point(rI, rJ);
-            this.Controls.Add(fruit);
+            PanelGameField.Controls.Add(fruit);
         }
 
         private void _update (Object myObject, EventArgs eventArgs)
