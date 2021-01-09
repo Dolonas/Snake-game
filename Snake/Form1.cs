@@ -16,13 +16,19 @@ namespace Snake
         private int rI, rJ;
         private PictureBox fruit;  // заготовка фрукта, который будет поедать Змей
         private PictureBox[] snake = new PictureBox[120];    //массив элементов Змейки
-        private GroupBox PanelGameField;  // элемент в которое будет помещено игровое поле
-        private GroupBox PanelMng;  // элемент формы, на котором будут располагаться органы управления
+        private Panel PanelGameField;  // элемент в которое будет помещено игровое поле
+        private Panel PanelMng;  // элемент формы, на котором будут располагаться органы управления
         private Label labelScore;   //  текстовый элемент с подсчётом очков
         private MyButton buttonPause;
-        private int _width = 990;
-        private int _height = 800;
-        private int _sizeOfSides = 40;
+        private MyButton buttonExit;
+        private int formWidth = 990;
+        private int formHeight = 800;
+        private int sizeOfSquare = 40;
+        private int xSizeOfField;
+        private int ySizeOfField;
+        private int xNumbersOfSquares;
+        private int yNumbersOfSquares;
+
         private int dirX = 1;
         private int dirY = 0;
         private int score = 0;
@@ -34,8 +40,10 @@ namespace Snake
         public Form1()
         {
             InitializeComponent();
-            this.Width = _width;
-            this.Height = _height;
+            this.Width = formWidth;
+            this.Height = formHeight;
+            xSizeOfField = formWidth - 120;
+            ySizeOfField = formHeight - 45;
             FormBuilding();
             SnakeAdd();
             GenerateMap();
@@ -45,25 +53,27 @@ namespace Snake
             mPlayer.Play(true);
             this.KeyDown += new KeyEventHandler(OKP);
             this.buttonPause.Click += new EventHandler(MakePause);
+            this.buttonExit.Click += new EventHandler(MakeExit);
         }
 
         private void FormBuilding()
         {
-            PanelGameField = new GroupBox();
+            PanelGameField = new Panel();
             PanelGameField.Text = "Игра";
             PanelGameField.ForeColor = Color.White;
-            PanelGameField.BackColor = Color.FromArgb(30, 50, 30);
-            PanelGameField.Size = new Size(_width - 150, _height - 45);
+            PanelGameField.BackColor = Color.FromArgb(30, 40, 40);
+            PanelGameField.Size = new Size(xSizeOfField, ySizeOfField);
             PanelGameField.Location = new Point(2, 2);
             this.Controls.Add(PanelGameField);
 
-            PanelMng = new GroupBox();
+            PanelMng = new Panel();
             PanelMng.Text = "Управление";
             PanelMng.ForeColor = Color.White;
             PanelMng.BackColor = Color.FromArgb(40,40,40);
-            PanelMng.Size = new Size(90, _height - 45);
-            PanelMng.Location = new Point(_width - 120, 2);
+            PanelMng.Size = new Size(90, formHeight - 45);
+            PanelMng.Location = new Point(formWidth - 120, 2);
             this.Controls.Add(PanelMng);
+
             labelScore = new Label();
             labelScore.Font = new Font(labelScore.Font.FontFamily, 12, labelScore.Font.Style);
             labelScore.ForeColor = Color.White;
@@ -71,6 +81,7 @@ namespace Snake
             labelScore.Size = new Size(80, 40);
             labelScore.Location = new Point(5, 30);
             PanelMng.Controls.Add(labelScore);
+
             buttonPause = new MyButton();
             buttonPause.Location = new Point(10, 200);
             buttonPause.AutoSize = false;
@@ -78,6 +89,15 @@ namespace Snake
             buttonPause.ForeColor = Color.White;
             buttonPause.Text = "Пауза";
             PanelMng.Controls.Add(buttonPause);
+
+            buttonExit = new MyButton();
+            buttonExit.Location = new Point(10, 250);
+            buttonExit.AutoSize = false;
+            buttonExit.Size = new Size(80, 40);
+            buttonExit.ForeColor = Color.White;
+            buttonExit.Text = "Выход";
+            PanelMng.Controls.Add(buttonExit);
+
             timer.Tick += new EventHandler(_update);
             timer.Interval = 300;
             timer.Start();
@@ -87,28 +107,28 @@ namespace Snake
         {
             snake[0] = new PictureBox();
             snake[0].Location = new Point(4, 6);
-            snake[0].Size = new Size(_sizeOfSides - 1, _sizeOfSides - 1);
+            snake[0].Size = new Size(sizeOfSquare - 1, sizeOfSquare - 1);
             snake[0].BackColor = Color.Red;
             PanelGameField.Controls.Add(snake[0]);
         }
 
         private void GenerateMap()
         {
-            for (int i = 0; i< _height/_sizeOfSides-1; i++)
+            for (int y = 0; y< ySizeOfField/sizeOfSquare - 1; y++)
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
-                pic.Location = new Point(2, _sizeOfSides * i + 7);
-                pic.Size = new Size(_width - 150, 1);
+                pic.Location = new Point(2, sizeOfSquare * y + 7);
+                pic.Size = new Size(formWidth - 150, 1);
                 PanelGameField.Controls.Add(pic);
             }
 
-            for (int j = 0; j < _width / _sizeOfSides-1; j++)
+            for (int x = 0; x < xSizeOfField / sizeOfSquare - 1; x++)
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
-                pic.Location = new Point(_sizeOfSides * j + 2, 7);
-                pic.Size = new Size(1, _height - 80);
+                pic.Location = new Point(sizeOfSquare * x + 2, 7);
+                pic.Size = new Size(1, formHeight - 80);
                 PanelGameField.Controls.Add(pic);
             }
         }
@@ -119,7 +139,7 @@ namespace Snake
             {
                 snake[i].Location = snake[i - 1].Location;
             }
-            snake[0].Location = new Point(snake[0].Location.X + dirX * _sizeOfSides, snake[0].Location.Y + dirY * _sizeOfSides);
+            snake[0].Location = new Point(snake[0].Location.X + dirX * sizeOfSquare, snake[0].Location.Y + dirY * sizeOfSquare);
             _eatItself();
         }
 
@@ -131,8 +151,8 @@ namespace Snake
                 eatingFruitSound.Play();
                 labelScore.Text = "Очки: " + ++score;
                 snake[score] = new PictureBox();
-                snake[score].Location = new Point(snake[score - 1].Location.X + _sizeOfSides * dirX, snake[score - 1].Location.Y + _sizeOfSides * dirY);
-                snake[score].Size = new Size(_sizeOfSides - 1, _sizeOfSides - 1);
+                snake[score].Location = new Point(snake[score - 1].Location.X + sizeOfSquare * dirX, snake[score - 1].Location.Y + sizeOfSquare * dirY);
+                snake[score].Size = new Size(sizeOfSquare - 1, sizeOfSquare - 1);
                 snake[score].BackColor = Color.Red;
                 this.Controls.Add(snake[score]);
                 GenerateFruit();
@@ -144,17 +164,17 @@ namespace Snake
             fruit = new PictureBox();
             fruit.Load("banana.png");
             //fruit.BackColor = Color.Yellow;
-            fruit.Size = new Size(_sizeOfSides, _sizeOfSides);
+            fruit.Size = new Size(sizeOfSquare, sizeOfSquare);
         }
 
         private void GenerateFruit()
         {
             Random r = new Random();
-            rI = r.Next(0, _width - _sizeOfSides * 3);
-            int tempI = rI % _sizeOfSides;
+            rI = r.Next(0, formWidth - sizeOfSquare * 3);
+            int tempI = rI % sizeOfSquare;
             rI -= tempI;
-            rJ = r.Next(0, _height - _sizeOfSides * 2);
-            int tempJ = rJ % _sizeOfSides;
+            rJ = r.Next(0, formHeight - sizeOfSquare * 2);
+            int tempJ = rJ % sizeOfSquare;
             rJ -= tempJ;
             rI++;
             rJ++;
@@ -199,7 +219,7 @@ namespace Snake
                 dirY = 0;
             }
 
-            if (snake[0].Location.X > _width - _sizeOfSides * 3)
+            if (snake[0].Location.X > formWidth - sizeOfSquare * 3)
             {
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
@@ -225,7 +245,7 @@ namespace Snake
                 dirX = 0;
             }
 
-            if (snake[0].Location.Y > _height - _sizeOfSides * 2.5)
+            if (snake[0].Location.Y > formHeight - sizeOfSquare * 2.5)
             {
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
@@ -263,6 +283,9 @@ namespace Snake
                 case "P":
                     MakePause(sender, e);
                     break;
+                case "Escape":
+                    MakeExit(sender, e);
+                    break;
             }
         }
 
@@ -272,6 +295,22 @@ namespace Snake
                 timer.Stop();
             else
                 timer.Start();
+        }
+
+        private void MakeExit(Object myObject, EventArgs eventArgs)
+        {
+            MakePause(myObject, eventArgs);
+            
+            var result = MessageBox.Show("Вы действительно хотите выйти?", "Выход", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+            if (result == DialogResult.OK)
+            {
+                this.Close();
+            }
+            else
+            {
+                MakePause(myObject, eventArgs);
+            }
         }
 
     }
