@@ -32,7 +32,6 @@ namespace Snake
         private int yNumbersOfSquares;
         private string workDirectory;
 
-
         private int dirX = 1;
         private int dirY = 0;
         private int score = 0;
@@ -311,6 +310,8 @@ namespace Snake
                 timer.Stop();
             else
                 timer.Start();
+            MakeMelodyPause();
+
         }
 
         private void MakeExit(Object myObject, EventArgs eventArgs)
@@ -335,6 +336,19 @@ namespace Snake
             WMP.settings.volume = 20;
             WMP.URL = melodyFile;
             WMP.controls.play();
+        }
+
+        private void MakeMelodyPause()
+        {
+            if (WMP.playState == WMPPlayState.wmppsPlaying)
+            {
+                WMP.controls.pause();
+            }
+            else if (WMP.playState == WMPPlayState.wmppsPaused)
+            {
+                WMP.controls.play();
+            }
+
         }
 
     }
