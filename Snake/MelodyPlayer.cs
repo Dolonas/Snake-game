@@ -25,7 +25,7 @@ namespace Snake
         private void soundthread()
         {
             player = new System.Media.SoundPlayer("Ocean_Man.wav");
-
+            
         }
 
         // Воспроизвести

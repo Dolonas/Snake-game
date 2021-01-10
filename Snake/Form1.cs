@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WMPLib;
 
 namespace Snake
 {
@@ -28,29 +30,43 @@ namespace Snake
         private int ySizeOfField;
         private int xNumbersOfSquares;
         private int yNumbersOfSquares;
+        private string workDirectory;
+
 
         private int dirX = 1;
         private int dirY = 0;
         private int score = 0;
-        private MelodyPlayer mPlayer = new MelodyPlayer();
-        private SoundPlayer eatItselfSound = new SoundPlayer("eat itself.wav");
-        private SoundPlayer collideSound = new SoundPlayer("collide.wav");
-        private SoundPlayer eatingFruitSound = new SoundPlayer("eating fruit.wav");
+        private WindowsMediaPlayer WMP;
+        private string melodyFile;
+        private SoundPlayer eatItselfSound;
+        private SoundPlayer collideSound;
+        private SoundPlayer eatingFruitSound;
 
         public Form1()
         {
             InitializeComponent();
             this.Width = formWidth;
             this.Height = formHeight;
-            xSizeOfField = formWidth - 120;
+            xSizeOfField = formWidth - 160;
             ySizeOfField = formHeight - 45;
+            string currDirectory = Directory.GetCurrentDirectory();
+            string tempDirectory = currDirectory + @"\..\..\Resources\";
+            workDirectory = Path.GetFullPath(tempDirectory);
+            melodyFile = workDirectory + "Ocean_Man.wav";
+            eatItselfSound = new SoundPlayer(workDirectory + "eat itself.wav");
+            collideSound = new SoundPlayer(workDirectory + "collide.wav");
+            eatingFruitSound = new SoundPlayer(workDirectory + "eating fruit.wav");
+
             FormBuilding();
             SnakeAdd();
             GenerateMap();
             FruitInit();
             GenerateFruit();
+
+            //mPlayer.Play(true);
+            MelodyStart();
+
             
-            mPlayer.Play(true);
             this.KeyDown += new KeyEventHandler(OKP);
             this.buttonPause.Click += new EventHandler(MakePause);
             this.buttonExit.Click += new EventHandler(MakeExit);
@@ -162,7 +178,7 @@ namespace Snake
         private void FruitInit()
         {
             fruit = new PictureBox();
-            fruit.Load("banana.png");
+            fruit.Load(workDirectory + "banana.png");
             //fruit.BackColor = Color.Yellow;
             fruit.Size = new Size(sizeOfSquare, sizeOfSquare);
         }
@@ -311,6 +327,14 @@ namespace Snake
             {
                 MakePause(myObject, eventArgs);
             }
+        }
+
+        private void MelodyStart()
+        {
+            WMP = new WindowsMediaPlayer();
+            WMP.settings.volume = 20;
+            WMP.URL = melodyFile;
+            WMP.controls.play();
         }
 
     }
