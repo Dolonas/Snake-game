@@ -16,8 +16,8 @@ namespace Snake
     public partial class Form1 : Form
     {
         private int xAxisOfFruit, yAxisOfFruit;
-        private PictureBox fruit;  // заготовка фрукта, который будет поедать Змей
-        private PictureBox[] snake = new PictureBox[120];    //массив элементов Змейки
+        private GameItem fruit;  // заготовка фрукта, который будет поедать Змей
+        private GameItem[] snake = new GameItem[120];    //массив элементов Змейки
         private Panel PanelGameField;  // элемент в которое будет помещено игровое поле
         private Panel PanelMng;  // элемент формы, на котором будут располагаться органы управления
         private Label labelScore;   //  текстовый элемент с подсчётом очков
@@ -120,8 +120,9 @@ namespace Snake
 
         private void SnakeAdd()
         {
-            snake[0] = new PictureBox();
-            snake[0].Location = new Point(GetXAxisInForm(0), GetYAxisInForm(0));
+            snake[0] = new GameItem();
+            snake[0].XCoor = 0;
+            snake[0].YCoor = 0;
             snake[0].Size = new Size(sizeOfSquare - 1, sizeOfSquare - 1);
             snake[0].BackColor = Color.Red;
             PanelGameField.Controls.Add(snake[0]);
@@ -154,22 +155,21 @@ namespace Snake
         {
             for (int i = score; i >= 1; i--)
             {
-                snake[i].Location = snake[i - 1].Location;
+                snake[i].LocationField = snake[i - 1].LocationField;
             }
-            snake[0].Location = new Point(snake[0].Location.X + dirX * sizeOfSquare, snake[0].Location.Y + dirY * sizeOfSquare);
+            snake[0].Location = new Point(snake[0].LocationField.X + dirX, snake[0].LocationField.Y + dirY);
             EatItself();
         }
 
 
         private void EatFruit()
         {
-            if(snake[0].Location.X == xAxisOfFruit && snake[0].Location.Y == yAxisOfFruit)
+            if(snake[0].LocationField == fruit.LocationField)
             {
                 eatingFruitSound.Play();
                 labelScore.Text = "Очки: " + ++score;
-                snake[score] = new PictureBox();
-                snake[score].Location = new Point(snake[score - 1].Location.X + sizeOfSquare * dirX, snake[score - 1].Location.Y + sizeOfSquare * dirY);
-                snake[score].Size = new Size(sizeOfSquare - 1, sizeOfSquare - 1);
+                snake[score] = new GameItem();
+                snake[score].LocationField = new Point(snake[score - 1].LocationField.X + dirX, snake[score - 1].LocationField.Y + dirY);
                 snake[score].BackColor = Color.Red;
                 this.Controls.Add(snake[score]);
                 GenerateFruit();
@@ -178,24 +178,19 @@ namespace Snake
 
         private void FruitInit()
         {
-            fruit = new PictureBox();
+            fruit = new GameItem();
             fruit.Load(workDirectory + "banana.png");
             //fruit.BackColor = Color.Yellow;
-            fruit.Size = new Size(sizeOfSquare, sizeOfSquare);
+            //fruit.Size = new Size(sizeOfSquare, sizeOfSquare);
         }
 
         private void GenerateFruit()
         {
             Random r = new Random();
-            xAxisOfFruit = r.Next(0, formWidth - sizeOfSquare * 3);
-            int tempI = xAxisOfFruit % sizeOfSquare;
-            xAxisOfFruit -= tempI;
-            yAxisOfFruit = r.Next(0, formHeight - sizeOfSquare * 2);
-            int tempJ = yAxisOfFruit % sizeOfSquare;
-            yAxisOfFruit -= tempJ;
-            xAxisOfFruit++;
-            yAxisOfFruit++;
-            fruit.Location = new Point(xAxisOfFruit, yAxisOfFruit);
+            xAxisOfFruit = r.Next(0, xSizeOfField);
+            yAxisOfFruit = r.Next(0, ySizeOfField);
+            
+            fruit.LocationField = new Point(xAxisOfFruit, yAxisOfFruit);
             PanelGameField.Controls.Add(fruit);
         }
 
@@ -211,7 +206,7 @@ namespace Snake
             
             for(int i = 1; i < score; i++)
             {
-                if(snake[0].Location == snake[i].Location)
+                if(snake[0].LocationField == snake[i].LocationField)
                 {
                     for (int j = i; j <= score; j++)
                         this.Controls.Remove(snake[j]);
@@ -353,21 +348,6 @@ namespace Snake
 
         }
 
-        private int GetXAxisInForm(int xCoord)
-        {
-
-            return 1;
-        }
-
-        private int GetYAxisInForm(int yCoord)
-        {
-            
-
-            return 1;
-
-            // пример кода для вычислений в этих методах
-            snake[score].Location = new Point(snake[score - 1].Location.X + sizeOfSquare * dirX, snake[score - 1].Location.Y + sizeOfSquare * dirY);  
-        }
 
     }
 
