@@ -29,7 +29,7 @@ namespace Snake
         private int xSizeOfField;
         private int ySizeOfField;
         private int xAmount = 20;
-        private int yAmount = 20;
+        private int yAmount = 18;
         private string workDirectory;
 
         private int dirX = 1;
@@ -123,7 +123,7 @@ namespace Snake
             snake[0] = new GameItem();
             snake[0].XCoor = 0;
             snake[0].YCoor = 0;
-            snake[0].Size = new Size(sizeOfSquare - 1, sizeOfSquare - 1);
+            //snake[0].Size = new Size(sizeOfSquare - 1, sizeOfSquare - 1);
             snake[0].BackColor = Color.Red;
             PanelGameField.Controls.Add(snake[0]);
         }
@@ -171,7 +171,7 @@ namespace Snake
                 snake[score] = new GameItem();
                 snake[score].LocationField = new Point(snake[score - 1].LocationField.X + dirX, snake[score - 1].LocationField.Y + dirY);
                 snake[score].BackColor = Color.Red;
-                this.Controls.Add(snake[score]);
+                PanelGameField.Controls.Add(snake[score]);
                 GenerateFruit();
             }
         }
@@ -209,7 +209,7 @@ namespace Snake
                 if(snake[0].LocationField == snake[i].LocationField)
                 {
                     for (int j = i; j <= score; j++)
-                        this.Controls.Remove(snake[j]);
+                        PanelGameField.Controls.Remove(snake[j]);
                     score = score - (score - i + 1);
                     eatItselfSound.Play();
                 }
@@ -223,7 +223,7 @@ namespace Snake
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
                 {
-                    this.Controls.Remove(snake[i]);
+                    PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
                 labelScore.Text = "Очки: " + score;
@@ -236,7 +236,7 @@ namespace Snake
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
                 {
-                    this.Controls.Remove(snake[i]);
+                    PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
                 labelScore.Text = "Очки: " + score;
@@ -249,7 +249,7 @@ namespace Snake
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
                 {
-                    this.Controls.Remove(snake[i]);
+                    PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
                 labelScore.Text = "Очки: " + score;
@@ -262,7 +262,7 @@ namespace Snake
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
                 {
-                    this.Controls.Remove(snake[i]);
+                    PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
                 labelScore.Text = "Очки: " + score;
