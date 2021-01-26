@@ -28,8 +28,8 @@ namespace Snake
         private int sizeOfSquare = 40;
         private int xSizeOfField;
         private int ySizeOfField;
-        private int xFieldStartPoint = 4;
-        private int yFieldStartPoint = 6;
+        private int xAmount = 20;
+        private int yAmount = 20;
         private string workDirectory;
 
         private int dirX = 1;
@@ -130,20 +130,20 @@ namespace Snake
 
         private void GenerateMap()
         {
-            for (int x = 0; x < xSizeOfField / sizeOfSquare - 1; x++)
+            for (int x = 0; x < xAmount; x++)
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
-                pic.Location = new Point(sizeOfSquare * x + 2, 7);
+                pic.Location = new Point(x * sizeOfSquare + GameItem.XPanelShift + GameItem.XFieldShift, GameItem.YPanelShift + GameItem.YFieldShift);
                 pic.Size = new Size(1, formHeight - 80);
                 PanelGameField.Controls.Add(pic);
             }
 
-            for (int y = 0; y< ySizeOfField/sizeOfSquare - 1; y++)
+            for (int y = 0; y< yAmount; y++)
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
-                pic.Location = new Point(2, sizeOfSquare * y + 7);
+                pic.Location = new Point(GameItem.XPanelShift + GameItem.XFieldShift, y * sizeOfSquare + GameItem.YPanelShift + GameItem.YFieldShift);
                 pic.Size = new Size(formWidth - 150, 1);
                 PanelGameField.Controls.Add(pic);
             }
@@ -157,7 +157,7 @@ namespace Snake
             {
                 snake[i].LocationField = snake[i - 1].LocationField;
             }
-            snake[0].Location = new Point(snake[0].LocationField.X + dirX, snake[0].LocationField.Y + dirY);
+            snake[0].LocationField = new Point(snake[0].LocationField.X + dirX, snake[0].LocationField.Y + dirY);
             EatItself();
         }
 
@@ -187,8 +187,8 @@ namespace Snake
         private void GenerateFruit()
         {
             Random r = new Random();
-            xAxisOfFruit = r.Next(0, xSizeOfField);
-            yAxisOfFruit = r.Next(0, ySizeOfField);
+            xAxisOfFruit = r.Next(0, xAmount);
+            yAxisOfFruit = r.Next(0, yAmount);
             
             fruit.LocationField = new Point(xAxisOfFruit, yAxisOfFruit);
             PanelGameField.Controls.Add(fruit);
@@ -218,7 +218,7 @@ namespace Snake
 
         private void CheckBorders()
         {
-            if (snake[0].Location.X < 0)
+            if (snake[0].LocationField.X < 0)
             {
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
@@ -231,7 +231,7 @@ namespace Snake
                 dirY = 0;
             }
 
-            if (snake[0].Location.X > formWidth - sizeOfSquare * 3)
+            if (snake[0].LocationField.X > xAmount)
             {
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
@@ -244,7 +244,7 @@ namespace Snake
                 dirY = 0;
             }
 
-            if (snake[0].Location.Y < 0)
+            if (snake[0].LocationField.Y < 0)
             {
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)
@@ -257,7 +257,7 @@ namespace Snake
                 dirX = 0;
             }
 
-            if (snake[0].Location.Y > formHeight - sizeOfSquare * 2.5)
+            if (snake[0].LocationField.Y > yAmount)
             {
                 collideSound.Play();
                 for (int i = 1; i <= score; i++)

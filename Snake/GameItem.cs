@@ -92,6 +92,8 @@ namespace Snake
             YPanelShift = 5;
             XFieldShift = 5;
             YFieldShift = 5;
+            XFieldSize = 20;
+            YFieldSize = 20;
             LineShift = 1;
             this.Size = new Size(GameItem.GameItemSize, GameItem.GameItemSize);
 
