@@ -96,8 +96,9 @@ namespace Snake
             PanelMng.Text = "Управление";
             PanelMng.ForeColor = Color.White;
             PanelMng.BackColor = Color.FromArgb(40,40,40);
-            PanelMng.Size = new Size(90, formHeight - 45);
-            PanelMng.Location = new Point(formWidth - 120, 2);
+            PanelMng.Location = new Point(xPanelSize, 2);
+            PanelMng.Size = new Size(this.Size.Width - xPanelSize - 2, yPanelSize);
+            
             this.Controls.Add(PanelMng);
 
             labelScore = new Label();
@@ -177,7 +178,7 @@ namespace Snake
             if(snake[0].LocationField == fruit.LocationField)
             {
                 eatingFruitSound.Play();
-                labelScore.Text = "Очки: " + ++score;
+                ChangeScore(++score);
                 snake[score] = new GameItem();
                 snake[score].LocationField = new Point(snake[score - 1].LocationField.X + dirX, snake[score - 1].LocationField.Y + dirY);
                 snake[score].BackColor = Color.Red;
@@ -221,6 +222,7 @@ namespace Snake
                     for (int j = i; j <= score; j++)
                         PanelGameField.Controls.Remove(snake[j]);
                     score = score - (score - i + 1);
+                    ChangeScore(score);
                     eatItselfSound.Play();
                 }
             }
@@ -236,7 +238,7 @@ namespace Snake
                     PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
-                labelScore.Text = "Очки: " + score;
+                ChangeScore(score);
                 dirX = 1;
                 dirY = 0;
             }
@@ -249,7 +251,7 @@ namespace Snake
                     PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
-                labelScore.Text = "Очки: " + score;
+                ChangeScore(score);
                 dirX = -1;
                 dirY = 0;
             }
@@ -262,7 +264,7 @@ namespace Snake
                     PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
-                labelScore.Text = "Очки: " + score;
+                ChangeScore(score);
                 dirY = 1;
                 dirX = 0;
             }
@@ -275,7 +277,7 @@ namespace Snake
                     PanelGameField.Controls.Remove(snake[i]);
                 }
                 score = 0;
-                labelScore.Text = "Очки: " + score;
+                ChangeScore(score);
                 dirY = -1;
                 dirX = 0;
             }
@@ -327,8 +329,6 @@ namespace Snake
                 MakeMelodyPause();
                 pauseFlag = false;
             }
-            
-
 
         }
 
@@ -371,7 +371,10 @@ namespace Snake
 
         }
 
-
+        private void ChangeScore(int amount)
+        {
+            labelScore.Text = "Очки: " + amount;
+        }
     }
 
     
