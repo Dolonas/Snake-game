@@ -26,15 +26,22 @@ namespace Snake
         private int formWidth = 990;
         private int formHeight = 800;
         private int sizeOfSquare = 40;
-        private int xSizeOfField;
-        private int ySizeOfField;
+        private int gameItemSize = 40;
+        private int xPanelShift = 5;
+        private int yPanelShift = 5;
+        private int xFieldShift = 5;
+        private int yFieldShift = 5;
+        private int lineShift = 1;
         private int xAmount = 20;
         private int yAmount = 18;
+        private int xPanelSize;
+        private int yPanelSize;
         private string workDirectory;
 
         private int dirX = 1;
         private int dirY = 0;
         private int score = 0;
+        private bool pauseFlag = false;
         private WindowsMediaPlayer WMP;
         private string melodyFile;
         private SoundPlayer eatItselfSound;
@@ -46,8 +53,8 @@ namespace Snake
             InitializeComponent();
             this.Width = formWidth;
             this.Height = formHeight;
-            xSizeOfField = formWidth - 160;
-            ySizeOfField = formHeight - 45;
+            //xSizeOfField = formWidth - 160;
+            //ySizeOfField = formHeight - 45;
             string currDirectory = Directory.GetCurrentDirectory();
             string tempDirectory = currDirectory + @"\..\..\Resources\";
             workDirectory = Path.GetFullPath(tempDirectory);
@@ -71,13 +78,17 @@ namespace Snake
             this.buttonExit.Click += new EventHandler(MakeExit);
         }
 
+        
         private void FormBuilding()
         {
             PanelGameField = new Panel();
             PanelGameField.Text = "Игра";
             PanelGameField.ForeColor = Color.White;
             PanelGameField.BackColor = Color.FromArgb(30, 40, 40);
-            PanelGameField.Size = new Size(xSizeOfField, ySizeOfField);
+            xPanelSize = xAmount * gameItemSize + xFieldShift * 2 + xPanelShift * 2 + lineShift;
+            yPanelSize = yAmount * gameItemSize + yFieldShift * 2 + yPanelShift * 2 + lineShift;
+
+            PanelGameField.Size = new Size(xPanelSize, yPanelSize);
             PanelGameField.Location = new Point(2, 2);
             this.Controls.Add(PanelGameField);
 
@@ -123,28 +134,27 @@ namespace Snake
             snake[0] = new GameItem();
             snake[0].XCoor = 0;
             snake[0].YCoor = 0;
-            //snake[0].Size = new Size(sizeOfSquare - 1, sizeOfSquare - 1);
             snake[0].BackColor = Color.Red;
             PanelGameField.Controls.Add(snake[0]);
         }
 
         private void GenerateMap()
         {
-            for (int x = 0; x < xAmount; x++)
+            for (int x = 0; x < xAmount + 1; x++)
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
                 pic.Location = new Point(x * sizeOfSquare + GameItem.XPanelShift + GameItem.XFieldShift, GameItem.YPanelShift + GameItem.YFieldShift);
-                pic.Size = new Size(1, formHeight - 80);
+                pic.Size = new Size(1, yAmount * sizeOfSquare);
                 PanelGameField.Controls.Add(pic);
             }
 
-            for (int y = 0; y< yAmount; y++)
+            for (int y = 0; y< yAmount + 1; y++)
             {
                 PictureBox pic = new PictureBox();
                 pic.BackColor = Color.SlateGray;
                 pic.Location = new Point(GameItem.XPanelShift + GameItem.XFieldShift, y * sizeOfSquare + GameItem.YPanelShift + GameItem.YFieldShift);
-                pic.Size = new Size(formWidth - 150, 1);
+                pic.Size = new Size(xAmount * sizeOfSquare, 1);
                 PanelGameField.Controls.Add(pic);
             }
 
@@ -303,17 +313,29 @@ namespace Snake
 
         private void MakePause(Object myObject, EventArgs eventArgs)
         {
-            if (timer.Enabled == true)
+            if (!pauseFlag)
+            {
                 timer.Stop();
+                MakeMelodyPause();
+                pauseFlag = true;
+
+            }
+
             else
+            {
                 timer.Start();
-            MakeMelodyPause();
+                MakeMelodyPause();
+                pauseFlag = false;
+            }
+            
+
 
         }
 
         private void MakeExit(Object myObject, EventArgs eventArgs)
         {
-            MakePause(myObject, eventArgs);
+            if (!pauseFlag)
+                MakePause(myObject, eventArgs);
             
             var result = MessageBox.Show("Вы действительно хотите выйти?", "Выход", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
@@ -321,7 +343,7 @@ namespace Snake
             {
                 this.Close();
             }
-            else
+            else if (pauseFlag)
             {
                 MakePause(myObject, eventArgs);
             }
@@ -332,6 +354,7 @@ namespace Snake
             WMP = new WindowsMediaPlayer();
             WMP.settings.volume = 20;
             WMP.URL = melodyFile;
+            WMP.settings.autoStart = true;
             WMP.controls.play();
         }
 
