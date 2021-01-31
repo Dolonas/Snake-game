@@ -21,6 +21,7 @@ namespace Snake
         private Panel PanelGameField;  // элемент в которое будет помещено игровое поле
         private Panel PanelMng;  // элемент формы, на котором будут располагаться органы управления
         private Label labelScore;   //  текстовый элемент с подсчётом очков
+        private GroupBox GBoxMng;   //  текстовый элемент с подсчётом очков
         private MyButton buttonPause;
         private MyButton buttonExit;
         private int formWidth = 990;
@@ -84,7 +85,7 @@ namespace Snake
             PanelGameField = new Panel();
             PanelGameField.Text = "Игра";
             PanelGameField.ForeColor = Color.White;
-            PanelGameField.BackColor = Color.FromArgb(30, 40, 40);
+            PanelGameField.BackColor = Color.FromArgb(60, 60, 60);
             xPanelSize = xAmount * gameItemSize + xFieldShift * 2 + xPanelShift * 2 + lineShift;
             yPanelSize = yAmount * gameItemSize + yFieldShift * 2 + yPanelShift * 2 + lineShift;
 
@@ -93,37 +94,41 @@ namespace Snake
             this.Controls.Add(PanelGameField);
 
             PanelMng = new Panel();
-            PanelMng.Text = "Управление";
             PanelMng.ForeColor = Color.White;
             PanelMng.BackColor = Color.FromArgb(40,40,40);
-            PanelMng.Location = new Point(xPanelSize, 2);
+            PanelMng.Location = new Point(xPanelSize+2, 2);
             PanelMng.Size = new Size(this.Size.Width - xPanelSize - 2, yPanelSize);
-            
             this.Controls.Add(PanelMng);
+
+            GBoxMng = new GroupBox();
+            GBoxMng.Text = "";
+            //GBoxMng.BackColor = Color.FromArgb(50, 50, 50);
+            //GBoxMng.ForeColor = Color.FromArgb(40, 40, 40);
+            GBoxMng.FlatStyle = FlatStyle.Flat;
+            GBoxMng.Location = new Point(5, 0);
+            GBoxMng.Size = new Size(PanelMng.Width-25, yPanelSize-5);
+            PanelMng.Controls.Add(GBoxMng);
+
+
 
             labelScore = new Label();
             labelScore.Font = new Font(labelScore.Font.FontFamily, 12, labelScore.Font.Style);
+            labelScore.Anchor = AnchorStyles.Top;
             labelScore.ForeColor = Color.White;
             labelScore.Text = "Очки: 0";
             labelScore.Size = new Size(80, 40);
-            labelScore.Location = new Point(5, 30);
-            PanelMng.Controls.Add(labelScore);
+            labelScore.Location = new Point(22, 30);
+            GBoxMng.Controls.Add(labelScore);
 
             buttonPause = new MyButton();
-            buttonPause.Location = new Point(10, 200);
-            buttonPause.AutoSize = false;
-            buttonPause.Size = new Size(80, 40);
-            buttonPause.ForeColor = Color.White;
+            buttonPause.Location = new Point(12, 200);
             buttonPause.Text = "Пауза";
-            PanelMng.Controls.Add(buttonPause);
+            GBoxMng.Controls.Add(buttonPause);
 
             buttonExit = new MyButton();
-            buttonExit.Location = new Point(10, 250);
-            buttonExit.AutoSize = false;
-            buttonExit.Size = new Size(80, 40);
-            buttonExit.ForeColor = Color.White;
+            buttonExit.Location = new Point(12, 270);
             buttonExit.Text = "Выход";
-            PanelMng.Controls.Add(buttonExit);
+            GBoxMng.Controls.Add(buttonExit);
 
             timer.Tick += new EventHandler(Update);
             timer.Interval = 300;
@@ -135,7 +140,7 @@ namespace Snake
             snake[0] = new GameItem();
             snake[0].XCoor = 0;
             snake[0].YCoor = 0;
-            snake[0].BackColor = Color.Red;
+            snake[0].BackColor = Color.FromArgb(214,66,255);
             PanelGameField.Controls.Add(snake[0]);
         }
 
@@ -181,7 +186,7 @@ namespace Snake
                 ChangeScore(++score);
                 snake[score] = new GameItem();
                 snake[score].LocationField = new Point(snake[score - 1].LocationField.X + dirX, snake[score - 1].LocationField.Y + dirY);
-                snake[score].BackColor = Color.Red;
+                snake[score].BackColor = Color.FromArgb(214, 66, 255);
                 PanelGameField.Controls.Add(snake[score]);
                 GenerateFruit();
             }
